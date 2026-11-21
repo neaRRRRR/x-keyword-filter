@@ -5,31 +5,30 @@
 <link rel="stylesheet" href="../x-keyword-filter/content.css">
 <body data-result="running">
 <div data-testid="cellInnerDiv" id="direct-row">
-  <article data-testid="tweet" id="direct"><div data-testid="tweetText">GTA—Vİ’nin yeni videosu</div></article>
+  <article data-testid="tweet" id="direct"><div data-testid="tweetText">Proje—Vİ’nin yeni videosu</div></article>
 </div>
 <div data-testid="cellInnerDiv" id="quote-row">
   <article data-testid="tweet" id="quote">
     <div data-testid="tweetText">Did you see this?</div>
-    <div role="link"><div lang="en" dir="auto">Cal <span>Hampton</span></div><div>18 likes</div></div>
+    <div role="link"><div lang="en" dir="auto">Aurora <span>Festival</span></div><div>18 likes</div></div>
   </article>
 </div>
-<article data-testid="tweet" id="link"><a href="https://www.rockstargames.com/VI">See this</a></article>
-<article data-testid="tweet" id="roman">GTA V'i tekrar oynuyorum</article>
-<article data-testid="tweet" id="another-game">First look at Elden Ring</article>
+<article data-testid="tweet" id="link"><a href="https://example.com/outdoor-market">See this</a></article>
+<article data-testid="tweet" id="roman">Etkinlik V'i tekrar izliyorum</article>
+<article data-testid="tweet" id="another-topic">Tomorrow's weather report</article>
 <article data-testid="tweet" id="clean">
-  <div data-testid="tweetText">GTAVision Türkçe oynanış #Spoiler PS5</div>
+  <div data-testid="tweetText">NorthwindForecast and marketplace news</div>
   <article data-testid="tweet" id="clean-quote"><div data-testid="tweetText">Sunny today</div></article>
 </article>
 <article data-testid="tweet" id="late"><div lang="en" dir="auto" id="late-quote">Loading</div></article>
-<aside id="unrelated">GTA 6</aside>
-<script src="../x-keyword-filter/presets.js"></script>
+<aside id="unrelated">Outdoor market</aside>
 <script>
   const mode = new URLSearchParams(location.search).get("mode");
   const direct = document.getElementById("direct");
   const quote = document.getElementById("quote");
   const link = document.getElementById("link");
   const roman = document.getElementById("roman");
-  const anotherGame = document.getElementById("another-game");
+  const anotherTopic = document.getElementById("another-topic");
   const clean = document.getElementById("clean");
   const late = document.getElementById("late");
   const rowHeight = direct.offsetHeight;
@@ -37,9 +36,13 @@
   chrome.storage = { local: { get: async (defaults) => mode === "default" ? defaults : ({
     mode,
     lists: [
-      { name: "GTA VI", enabled: mode !== "inactive", keywords: GTA_VI_KEYWORDS },
-      { name: "Elden Ring", enabled: true, keywords: ["Elden Ring"] },
-      { name: "Inactive", enabled: false, keywords: ["GTAVision"] }
+      {
+        name: "Events",
+        enabled: mode !== "inactive",
+        keywords: ["Proje VI", "Aurora Festival", "Outdoor market", "Etkinlik V", "ProjeVIDuyuru", "Community meetup"]
+      },
+      { name: "Weather", enabled: true, keywords: ["Weather report"] },
+      { name: "Inactive", enabled: false, keywords: ["NorthwindForecast"] }
     ]
   }) } };
 </script>
@@ -62,21 +65,21 @@
     assert(initiallyHidden, "A post was visible before the content script classified it");
     await afterMutations();
     if (mode === "default") {
-      assert(getComputedStyle(direct).filter === "none" && getComputedStyle(direct).visibility === "visible", "GTA posts were filtered on a fresh installation");
-      document.body.insertAdjacentHTML("beforeend", '<article data-testid="tweet" id="new-post">#GTA6Oynanış</article>');
+      assert(getComputedStyle(direct).filter === "none" && getComputedStyle(direct).visibility === "visible", "Posts were filtered on a fresh installation");
+      document.body.insertAdjacentHTML("beforeend", '<article data-testid="tweet" id="new-post">#ProjeVİDuyuru</article>');
       assert(getComputedStyle(document.getElementById("new-post")).visibility === "visible", "A fresh installation briefly hid a new post");
       return;
     }
-    assertFiltered(anotherGame, "An active custom list was ignored");
+    assertFiltered(anotherTopic, "An active custom list was ignored");
     assert(getComputedStyle(clean).visibility === "visible" && getComputedStyle(clean).filter === "none", "An inactive list filtered an unrelated post");
     if (mode === "inactive") {
-      assert(getComputedStyle(direct).visibility === "visible" && getComputedStyle(direct).filter === "none", "The disabled GTA list still filtered posts");
+      assert(getComputedStyle(direct).visibility === "visible" && getComputedStyle(direct).filter === "none", "The disabled event list still filtered posts");
       return;
     }
     assertFiltered(direct, "The title variant in the main post was missed");
     assertFiltered(quote, "A quote-only match did not filter the entire outer post");
-    assertFiltered(link, "The Rockstar link was missed");
-    assertFiltered(roman, "The Roman numeral GTA V was missed");
+    assertFiltered(link, "The keyword in the link was missed");
+    assertFiltered(roman, "The Roman numeral phrase was missed");
     assert(getComputedStyle(document.getElementById("clean-quote")).visibility === "visible", "An unrelated nested quote was hidden");
     assert(getComputedStyle(document.getElementById("unrelated")).visibility === "visible", "Page text outside a post was filtered");
     if (mode === "remove") {
@@ -87,10 +90,10 @@
       direct.querySelector('[data-testid="tweetText"]').textContent = "Sports scores";
     }
 
-    document.body.insertAdjacentHTML("beforeend", '<article data-testid="tweet" id="new-post">#GTA6Oynanış</article>');
+    document.body.insertAdjacentHTML("beforeend", '<article data-testid="tweet" id="new-post">#ProjeVİDuyuru</article>');
     const inserted = document.getElementById("new-post");
     assert(getComputedStyle(inserted).visibility === "hidden", "A newly inserted post flashed unfiltered");
-    document.getElementById("late-quote").firstChild.data = "Port Gellhorn";
+    document.getElementById("late-quote").firstChild.data = "Community meetup";
     await afterMutations();
     assertFiltered(inserted, "A newly inserted post was missed");
     assertFiltered(late, "Text loaded into an existing quote was missed");

@@ -28,7 +28,7 @@ legend, .field-label {
   font-weight: 650;
 }
 
-.modes, .list-actions {
+.modes {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -36,9 +36,8 @@ legend, .field-label {
   margin: 6px 0 16px;
 }
 
-.list-actions {
-  flex-wrap: wrap;
-  justify-content: flex-start;
+#add-list {
+  margin: 6px 0 16px;
 }
 
 .modes label, .list-toggle {

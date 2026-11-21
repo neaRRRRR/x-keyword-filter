@@ -19,11 +19,7 @@ Tarayıcı araç çubuğundaki uzantı menüsünden **X Kelime Filtresi**’ni a
 
 İlk kurulumda kelime listeleri boştur. **Yeni liste** ile istediğin konu için bir liste oluşturabilirsin. Bir listeyi seçip adını, etkinliğini ve kelimelerini düzenle. Etkin listeler birlikte çalışır ve tarayıcıda saklanır. Değişiklikleri kaydettikten sonra açık X sekmelerini yenile.
 
-**GTA VI hazır listesini ekle** seçeneğiyle [230 hazır terimi](x-keyword-filter/presets.js) listelerine ekleyebilirsin. Kaydettiğinde etkinleşir. GTA V, Rockstar, Jason ve Lucia gibi geniş terimler başka konulardaki gönderilerle de eşleşebilir.
-
 Filtre, X’in yüklediği gönderi ve alıntı metinlerini, görünen hesap adlarını, bağlantıları ve mevcut alternatif metinleri tarayıcıda inceler. Görseldeki yazıyı yakalamak için X’te erişilebilir bir metin karşılığı gerekir.
-
-Listeyi hazırlarken Rockstar’ın [karakter ve yer sayfasını](https://www.rockstargames.com/VI/only-in-leonida/vice-city), [Ultimate Edition içeriğini](https://www.rockstargames.com/VI/editions/ultimate-edition) ve [müzik rehberini](https://www.rockstargames.com/VI/music) kullandım.
 
 ## Test
 

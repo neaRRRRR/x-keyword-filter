@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "X Kelime Filtresi",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "X gönderilerini ve alıntılarını kelime listelerine göre bulanıklaştırır veya kaldırır.",
   "minimum_chrome_version": "105",
   "permissions": ["storage", "unlimitedStorage"],
