@@ -1,0 +1,99 @@
+:root {
+  color-scheme: light dark;
+  font: 14px/1.4 system-ui, sans-serif;
+  accent-color: #7952dc;
+}
+
+body {
+  box-sizing: border-box;
+  min-width: 350px;
+  margin: 0;
+  padding: 18px;
+}
+
+h1 {
+  margin: 0 0 14px;
+  font-size: 19px;
+}
+
+fieldset {
+  min-inline-size: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+legend, .field-label {
+  padding: 0;
+  font-weight: 650;
+}
+
+.modes, .list-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 16px;
+}
+
+.modes label, .list-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+p {
+  margin: 4px 0 8px;
+}
+
+textarea, input[type="text"], select {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid GrayText;
+  border-radius: 6px;
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+  font: 13px/1.5 ui-monospace, monospace;
+}
+
+.list-picker select {
+  min-width: 0;
+}
+
+.list-picker button {
+  flex-shrink: 0;
+}
+
+input[type="text"] {
+  margin-top: 4px;
+}
+
+.list-toggle {
+  margin: 8px 0 14px;
+}
+
+button {
+  border: 1px solid GrayText;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font: inherit;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  display: block;
+  margin: 10px 0 0 auto;
+  background: #6038b9;
+  border-color: #6038b9;
+  color: white;
+}
+
+#status {
+  min-height: 20px;
+  margin-bottom: 0;
+}

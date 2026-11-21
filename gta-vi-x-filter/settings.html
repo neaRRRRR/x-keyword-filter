@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GTA VI filtresi</title>
+  <link rel="stylesheet" href="settings.css">
+  <script src="keywords.js" defer></script>
+  <script src="settings.js" defer></script>
+</head>
+<body>
+  <h1>GTA VI filtresi</h1>
+  <form>
+    <fieldset id="controls" disabled>
+      <legend>Eşleşen gönderiler</legend>
+      <div class="modes">
+        <label><input type="radio" name="mode" value="blur" checked> Bulanıklaştır</label>
+        <label><input type="radio" name="mode" value="remove"> Kaldır</label>
+      </div>
+    </fieldset>
+    <fieldset id="lists" disabled>
+      <legend>Kelime listeleri</legend>
+      <div class="list-picker">
+        <select id="list" aria-label="Düzenlenecek liste"></select>
+        <button type="button" id="add-list">Yeni liste</button>
+      </div>
+      <label for="list-name" class="field-label">Liste adı</label>
+      <input id="list-name" type="text" required>
+      <label class="list-toggle"><input id="list-enabled" type="checkbox"> Bu liste aktif</label>
+      <label for="keywords" class="field-label">Anahtar kelimeler</label>
+      <p id="hint">Her satıra bir kelime veya ifade yaz.</p>
+      <textarea id="keywords" rows="8" wrap="off" spellcheck="false" aria-describedby="hint"></textarea>
+      <button type="submit">Kaydet</button>
+    </fieldset>
+    <p id="status" role="status"></p>
+  </form>
+</body>
+</html>

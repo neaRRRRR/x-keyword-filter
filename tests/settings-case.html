@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="tr">
+<meta charset="utf-8">
+<title>Settings regression test</title>
+<form>
+  <fieldset id="controls" disabled>
+    <input type="radio" name="mode" value="blur">
+    <input type="radio" name="mode" value="remove">
+  </fieldset>
+  <fieldset id="lists" disabled>
+    <select id="list"></select>
+    <button id="add-list" type="button">New list</button>
+    <input id="list-name" required>
+    <input id="list-enabled" type="checkbox">
+    <textarea id="keywords"></textarea>
+    <button type="submit">Save</button>
+  </fieldset>
+  <p id="status"></p>
+</form>
+<script>
+  let storedSettings;
+  chrome.storage = { local: {
+    get: async (defaults) => structuredClone(defaults),
+    set: async (settings) => { storedSettings = structuredClone(settings); }
+  } };
+</script>
+<script src="../gta-vi-x-filter/keywords.js"></script>
+<script src="../gta-vi-x-filter/settings.js"></script>
+<script>
+  (async () => {
+    const assert = (condition, message) => {
+      if (!condition) throw new Error(message);
+    };
+    await Promise.resolve();
+    assert(form.elements.mode.value === "blur" && enabledInput.checked, "The default mode or list was disabled");
+    assert(keywordsInput.value.split("\n").includes("GTA V"), "Default keywords were missing");
+
+    keywordsInput.value += "\nTest GTA alias";
+    enabledInput.checked = false;
+    document.getElementById("add-list").click();
+    assert(!enabledInput.checked, "New lists started enabled");
+    nameInput.value = "Another game";
+    enabledInput.checked = true;
+    keywordsInput.value = Array.from({ length: 5000 }, (_, index) => `keyword ${index}`).join("\n");
+    listInput.value = "0";
+    listInput.dispatchEvent(new Event("change"));
+    assert(!enabledInput.checked && keywordsInput.value.endsWith("Test GTA alias"), "Switching lists discarded edits");
+
+    form.elements.mode.value = "remove";
+    form.requestSubmit();
+    await Promise.resolve();
+    const [gta, other] = storedSettings.lists;
+    assert(storedSettings.mode === "remove", "The removal setting was lost");
+    assert(!gta.enabled && gta.keywords.includes("Test GTA alias"), "The edited GTA list was lost");
+    assert(other.enabled && other.name === "Another game" && other.keywords[4999] === "keyword 4999", "The new list or keywords were lost");
+  })().then(
+    () => parent.postMessage({ mode: "settings", result: "pass" }, "*"),
+    (error) => parent.postMessage({ mode: "settings", result: `fail ${error.message}` }, "*")
+  );
+</script>

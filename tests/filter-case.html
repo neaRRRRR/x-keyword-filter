@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>X filter regression test</title>
+<link rel="stylesheet" href="../gta-vi-x-filter/content.css">
+<body data-result="running">
+<div data-testid="cellInnerDiv" id="direct-row">
+  <article data-testid="tweet" id="direct"><div data-testid="tweetText">GTA—Vİ’nin yeni videosu</div></article>
+</div>
+<div data-testid="cellInnerDiv" id="quote-row">
+  <article data-testid="tweet" id="quote">
+    <div data-testid="tweetText">Did you see this?</div>
+    <div role="link"><div lang="en" dir="auto">Cal <span>Hampton</span></div><div>18 likes</div></div>
+  </article>
+</div>
+<article data-testid="tweet" id="link"><a href="https://www.rockstargames.com/VI">See this</a></article>
+<article data-testid="tweet" id="roman">GTA V'i tekrar oynuyorum</article>
+<article data-testid="tweet" id="another-game">First look at Elden Ring</article>
+<article data-testid="tweet" id="clean">
+  <div data-testid="tweetText">GTAVision Türkçe oynanış #Spoiler PS5</div>
+  <article data-testid="tweet" id="clean-quote"><div data-testid="tweetText">Sunny today</div></article>
+</article>
+<article data-testid="tweet" id="late"><div lang="en" dir="auto" id="late-quote">Loading</div></article>
+<aside id="unrelated">GTA 6</aside>
+<script>
+  const mode = new URLSearchParams(location.search).get("mode");
+  const direct = document.getElementById("direct");
+  const quote = document.getElementById("quote");
+  const link = document.getElementById("link");
+  const roman = document.getElementById("roman");
+  const anotherGame = document.getElementById("another-game");
+  const clean = document.getElementById("clean");
+  const late = document.getElementById("late");
+  const rowHeight = direct.offsetHeight;
+  const initiallyHidden = getComputedStyle(direct).visibility === "hidden";
+  chrome.storage = { local: { get: async (defaults) => ({
+    mode,
+    lists: [
+      ...(defaults.lists ?? []).map((list) => ({ ...list, enabled: mode !== "inactive" })),
+      { name: "Elden Ring", enabled: true, keywords: ["Elden Ring"] },
+      { name: "Inactive", enabled: false, keywords: ["GTAVision"] }
+    ]
+  }) } };
+</script>
+<script src="../gta-vi-x-filter/keywords.js"></script>
+<script src="../gta-vi-x-filter/content.js"></script>
+<script>
+  (async () => {
+    const assert = (condition, message) => {
+      if (!condition) throw new Error(message);
+    };
+    const afterMutations = () => new Promise((resolve) => setTimeout(resolve, 0));
+    const assertFiltered = (post, message) => {
+      if (mode === "remove") {
+        assert(!post.isConnected, message);
+      } else {
+        assert(post.isConnected && post.inert && /^blur\(/.test(getComputedStyle(post).filter), message);
+      }
+    };
+
+    assert(initiallyHidden, "A post was visible before the content script classified it");
+    await afterMutations();
+    assertFiltered(anotherGame, "An active custom list was ignored");
+    assert(getComputedStyle(clean).visibility === "visible" && getComputedStyle(clean).filter === "none", "An inactive list filtered an unrelated post");
+    if (mode === "inactive") {
+      assert(getComputedStyle(direct).visibility === "visible" && getComputedStyle(direct).filter === "none", "The disabled GTA list still filtered posts");
+      return;
+    }
+    assertFiltered(direct, "The title variant in the main post was missed");
+    assertFiltered(quote, "A quote-only match did not filter the entire outer post");
+    assertFiltered(link, "The Rockstar link was missed");
+    assertFiltered(roman, "The Roman numeral GTA V was missed");
+    assert(getComputedStyle(document.getElementById("clean-quote")).visibility === "visible", "An unrelated nested quote was hidden");
+    assert(getComputedStyle(document.getElementById("unrelated")).visibility === "visible", "Page text outside a post was filtered");
+    if (mode === "remove") {
+      assert(document.getElementById("direct-row").offsetHeight === 0, "A removed post left a visible timeline cell");
+      document.getElementById("direct-row").innerHTML = '<article data-testid="tweet" id="replacement">Sports scores</article>';
+    } else {
+      assert(direct.offsetHeight === rowHeight, "Blurring changed the height of the post");
+      direct.querySelector('[data-testid="tweetText"]').textContent = "Sports scores";
+    }
+
+    document.body.insertAdjacentHTML("beforeend", '<article data-testid="tweet" id="new-post">#GTA6Oynanış</article>');
+    const inserted = document.getElementById("new-post");
+    assert(getComputedStyle(inserted).visibility === "hidden", "A newly inserted post flashed unfiltered");
+    document.getElementById("late-quote").firstChild.data = "Port Gellhorn";
+    await afterMutations();
+    assertFiltered(inserted, "A newly inserted post was missed");
+    assertFiltered(late, "Text loaded into an existing quote was missed");
+    const reused = mode === "remove" ? document.getElementById("replacement") : direct;
+    assert(getComputedStyle(reused).visibility === "visible" && getComputedStyle(reused).filter === "none" && !reused.inert, "A reused post or cell stayed filtered");
+  })().then(
+    () => parent.postMessage({ mode, result: "pass" }, "*"),
+    (error) => parent.postMessage({ mode, result: `fail ${error.message}` }, "*")
+  );
+</script>
+</body>
+</html>

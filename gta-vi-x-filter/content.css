@@ -1,0 +1,14 @@
+/* Keep posts out of the first paint until the content script has checked them. */
+:is(article, [role="article"])[data-testid="tweet"]:not([data-testid="tweet"] [data-testid="tweet"]):not([data-gta-vi-filter]) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+[data-gta-vi-filter="blurred"] {
+  filter: blur(24px) !important;
+  clip-path: inset(0);
+}
+
+[data-testid="cellInnerDiv"][data-gta-vi-filter="empty"]:not(:has([data-testid="tweet"])) {
+  display: none !important;
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>X filter regression tests</title>
+<body data-result="running">
+<pre id="results" aria-live="polite"></pre>
+<script>
+  const cases = new Map();
+  const results = new Map();
+  addEventListener("message", (event) => {
+    const { mode, result } = event.data ?? {};
+    if (cases.get(mode)?.contentWindow !== event.source) return;
+    results.set(mode, result);
+    document.getElementById("results").textContent = [...results]
+      .map(([name, value]) => `${name}: ${value}`).join("\n");
+    if (results.size === cases.size) {
+      document.body.dataset.result = [...results.values()].every((value) => value === "pass") ? "pass" : "fail";
+    }
+  });
+  for (const mode of ["blur", "remove", "inactive", "settings"]) {
+    const frame = document.createElement("iframe");
+    frame.title = mode;
+    frame.src = mode === "settings" ? "settings-case.html" : `filter-case.html?mode=${mode}`;
+    cases.set(mode, frame);
+    document.body.append(frame);
+  }
+</script>
+</body>
+</html>
