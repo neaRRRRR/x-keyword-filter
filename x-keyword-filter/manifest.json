@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "GTA VI Filtresi · X",
-  "version": "1.0.0",
-  "description": "X'te GTA VI ile ilgili gönderileri ve alıntıları bulanıklaştırır veya kaldırır.",
+  "name": "X Kelime Filtresi",
+  "version": "1.1.0",
+  "description": "X gönderilerini ve alıntılarını kelime listelerine göre bulanıklaştırır veya kaldırır.",
   "minimum_chrome_version": "105",
   "permissions": ["storage", "unlimitedStorage"],
   "action": {
-    "default_title": "GTA VI filtresi",
+    "default_title": "X Kelime Filtresi",
     "default_popup": "settings.html"
   },
   "content_scripts": [
@@ -18,7 +18,7 @@
         "https://www.twitter.com/*"
       ],
       "css": ["content.css"],
-      "js": ["keywords.js", "content.js"],
+      "js": ["preferences.js", "content.js"],
       "run_at": "document_start"
     }
   ]

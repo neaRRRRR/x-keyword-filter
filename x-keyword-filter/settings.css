@@ -28,12 +28,17 @@ legend, .field-label {
   font-weight: 650;
 }
 
-.modes, .list-picker {
+.modes, .list-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin: 6px 0 16px;
+}
+
+.list-actions {
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .modes label, .list-toggle {
@@ -61,12 +66,8 @@ textarea {
   font: 13px/1.5 ui-monospace, monospace;
 }
 
-.list-picker select {
-  min-width: 0;
-}
-
-.list-picker button {
-  flex-shrink: 0;
+#list {
+  margin-bottom: 10px;
 }
 
 input[type="text"] {

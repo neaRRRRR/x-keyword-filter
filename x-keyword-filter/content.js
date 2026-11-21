@@ -1,7 +1,7 @@
 (() => {
   const POST = ':is(article, [role="article"])[data-testid="tweet"]';
   const CELL = '[data-testid="cellInnerDiv"]';
-  const STATE = "data-gta-vi-filter";
+  const STATE = "data-x-keyword-filter";
   const TEXT_ATTRIBUTES = ["href", "data-expanded-url", "title", "alt", "aria-label"];
   const TEXT_FIELDS = [
     '[data-testid="tweetText"]', '[data-testid="User-Name"]',
@@ -29,7 +29,6 @@
 
   function startFilter({ mode, lists }) {
     const termsByLength = new Map();
-    const madeInert = new WeakSet();
 
     for (const list of Array.isArray(lists) ? lists : FILTER_DEFAULTS.lists) {
       if (list?.enabled !== true || !Array.isArray(list.keywords)) continue;
@@ -43,6 +42,14 @@
       }
     }
 
+    if (termsByLength.size === 0) {
+      const revealTimeline = () => document.documentElement.setAttribute(STATE, "inactive");
+      if (document.documentElement) revealTimeline();
+      else document.addEventListener("DOMContentLoaded", revealTimeline, { once: true });
+      return;
+    }
+
+    const madeInert = new WeakSet();
     function matches(text) {
       if (!text) return false;
       const words = normalize(text).split(" ");
@@ -55,7 +62,6 @@
     }
 
     function hasMatch(post) {
-      if (termsByLength.size === 0) return false;
       if (matches(post.textContent) || matches(post.getAttribute("aria-label"))) return true;
       return Array.from(post.querySelectorAll(TEXT_FIELDS)).some((field) =>
         matches(field.textContent) ||

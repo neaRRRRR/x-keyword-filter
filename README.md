@@ -1,23 +1,25 @@
-# X için GTA VI filtresi
+# X Kelime Filtresi
 
 Chrome ve Chromium tabanlı tarayıcılarda X gönderilerini ve içlerindeki alıntıları tarar. Eşleşme durumunda dıştaki gönderinin tamamına seçtiğin işlemi uygular.
 
 ## Kurulum
 
-1. ZIP’i aç.
+1. [GitHub Releases](https://github.com/neaRRRRR/x-keyword-filter/releases/latest) sayfasından `x-keyword-filter.zip` dosyasını indir ve aç.
 2. Tarayıcının uzantılar sayfasını aç. Chrome’da `chrome://extensions`, Brave’de `brave://extensions`, Edge’de `edge://extensions`.
-3. **Geliştirici modu**nu aç. **Paketlenmemiş öğe yükle** seçeneğiyle `manifest.json` içeren `gta-vi-x-filter` klasörünü seç.
+3. **Geliştirici modu**nu aç. **Paketlenmemiş öğe yükle** seçeneğiyle `manifest.json` içeren `x-keyword-filter` klasörünü seç.
 4. Açık X sekmelerini yenile.
 
 [Chrome’un yerel kurulum kılavuzu](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked)
 
+Önceki sürümdeki kayıtlı listeleri korumak için ZIP’teki uzantı dosyalarını daha önce yüklediğin klasöre kopyala. Uzantılar sayfasında **Yeniden yükle**’ye bas.
+
 ## Ayarlar
 
-Tarayıcı araç çubuğundaki uzantı menüsünden **GTA VI filtresi**ni aç. **Bulanıklaştır** varsayılan ayardır ve gönderinin akıştaki yerini korur. **Kaldır**, eşleşen gönderi öğesini sayfadan çıkarır.
+Tarayıcı araç çubuğundaki uzantı menüsünden **X Kelime Filtresi**’ni aç. **Bulanıklaştır** varsayılan işlemdir ve gönderinin akıştaki yerini korur. **Kaldır**, eşleşen gönderi öğesini sayfadan çıkarır.
 
-**Yeni liste** ile başka bir oyun veya konu ekleyebilirsin. Bir listeyi seçip adını, aktif durumunu ve kelimelerini düzenle. Etkin listeler birlikte çalışır. Listeler tarayıcıda saklanır ve her listeye istediğin kadar kelime ekleyebilirsin. Değişiklikleri kaydettikten sonra açık X sekmelerini yenile.
+İlk kurulumda kelime listeleri boştur. **Yeni liste** ile istediğin konu için bir liste oluşturabilirsin. Bir listeyi seçip adını, etkinliğini ve kelimelerini düzenle. Etkin listeler birlikte çalışır ve tarayıcıda saklanır. Değişiklikleri kaydettikten sonra açık X sekmelerini yenile.
 
-[Varsayılan liste](gta-vi-x-filter/keywords.js) oyun adlarını, karakter ve yer adlarını, yayıncıyı ve Türkçe ile İngilizce etiket varyasyonlarını kapsar. GTA V, Rockstar, Jason ve Lucia gibi geniş terimler başka konulardaki gönderilerle de eşleşebilir.
+**GTA VI hazır listesini ekle** seçeneğiyle [230 hazır terimi](x-keyword-filter/presets.js) listelerine ekleyebilirsin. Kaydettiğinde etkinleşir. GTA V, Rockstar, Jason ve Lucia gibi geniş terimler başka konulardaki gönderilerle de eşleşebilir.
 
 Filtre, X’in yüklediği gönderi ve alıntı metinlerini, görünen hesap adlarını, bağlantıları ve mevcut alternatif metinleri tarayıcıda inceler. Görseldeki yazıyı yakalamak için X’te erişilebilir bir metin karşılığı gerekir.
 

@@ -1,4 +1,4 @@
-const DEFAULT_KEYWORDS = Object.freeze([
+const GTA_VI_KEYWORDS = Object.freeze([
   "GTA VI",
   "GTA 6",
   "GTAVI",
@@ -112,8 +112,3 @@ const DEFAULT_KEYWORDS = Object.freeze([
     ].map((suffix) => title + suffix)
   )
 ]);
-
-const FILTER_DEFAULTS = {
-  mode: "blur",
-  lists: [{ name: "GTA VI", enabled: true, keywords: DEFAULT_KEYWORDS }]
-};

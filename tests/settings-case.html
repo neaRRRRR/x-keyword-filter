@@ -8,32 +8,56 @@
     <input type="radio" name="mode" value="remove">
   </fieldset>
   <fieldset id="lists" disabled>
-    <select id="list"></select>
     <button id="add-list" type="button">New list</button>
-    <input id="list-name" required>
-    <input id="list-enabled" type="checkbox">
-    <textarea id="keywords"></textarea>
+    <button id="add-gta-preset" type="button">Add GTA preset</button>
+    <fieldset id="list-editor" hidden disabled>
+      <select id="list"></select>
+      <input id="list-name" required>
+      <input id="list-enabled" type="checkbox">
+      <textarea id="keywords"></textarea>
+    </fieldset>
     <button type="submit">Save</button>
   </fieldset>
   <p id="status"></p>
 </form>
 <script>
   let storedSettings;
+  const testMode = new URLSearchParams(location.search).get("mode");
+  const previousSettings = {
+    mode: "remove",
+    lists: [
+      { name: "Game names", enabled: true, keywords: ["Test game"] },
+      { name: "GTA VI", enabled: false, keywords: ["My custom GTA term"] }
+    ]
+  };
   chrome.storage = { local: {
-    get: async (defaults) => structuredClone(defaults),
+    get: async (defaults) => structuredClone(testMode === "saved-settings" ? previousSettings : defaults),
     set: async (settings) => { storedSettings = structuredClone(settings); }
   } };
 </script>
-<script src="../gta-vi-x-filter/keywords.js"></script>
-<script src="../gta-vi-x-filter/settings.js"></script>
+<script src="../x-keyword-filter/preferences.js"></script>
+<script src="../x-keyword-filter/presets.js"></script>
+<script src="../x-keyword-filter/settings.js"></script>
 <script>
   (async () => {
     const assert = (condition, message) => {
       if (!condition) throw new Error(message);
     };
     await Promise.resolve();
-    assert(form.elements.mode.value === "blur" && enabledInput.checked, "The default mode or list was disabled");
-    assert(keywordsInput.value.split("\n").includes("GTA V"), "Default keywords were missing");
+    if (testMode === "saved-settings") {
+      form.requestSubmit();
+      await Promise.resolve();
+      assert(JSON.stringify(storedSettings) === JSON.stringify(previousSettings), "The update overwrote saved lists or mode");
+      return;
+    }
+    assert(form.elements.mode.value === "blur" && listEditor.hidden && listInput.options.length === 0, "A fresh installation enabled a list");
+    form.requestSubmit();
+    await Promise.resolve();
+    assert(storedSettings.lists.length === 0, "Saving without a list added a preset");
+
+    document.getElementById("add-gta-preset").click();
+    assert(!listEditor.hidden && nameInput.value === "GTA VI" && enabledInput.checked, "The requested preset was not added and enabled");
+    assert(keywordsInput.value.split("\n").includes("GTA V"), "Preset keywords were missing");
 
     keywordsInput.value += "\nTest GTA alias";
     enabledInput.checked = false;
@@ -54,7 +78,7 @@
     assert(!gta.enabled && gta.keywords.includes("Test GTA alias"), "The edited GTA list was lost");
     assert(other.enabled && other.name === "Another game" && other.keywords[4999] === "keyword 4999", "The new list or keywords were lost");
   })().then(
-    () => parent.postMessage({ mode: "settings", result: "pass" }, "*"),
-    (error) => parent.postMessage({ mode: "settings", result: `fail ${error.message}` }, "*")
+    () => parent.postMessage({ mode: testMode, result: "pass" }, "*"),
+    (error) => parent.postMessage({ mode: testMode, result: `fail ${error.message}` }, "*")
   );
 </script>

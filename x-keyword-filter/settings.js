@@ -1,6 +1,7 @@
 const form = document.querySelector("form");
 const controls = document.getElementById("controls");
 const listsFieldset = document.getElementById("lists");
+const listEditor = document.getElementById("list-editor");
 const listInput = document.getElementById("list");
 const nameInput = document.getElementById("list-name");
 const enabledInput = document.getElementById("list-enabled");
@@ -10,12 +11,17 @@ let lists;
 let selected = 0;
 
 function captureList() {
+  if (lists.length === 0) return;
   const name = nameInput.value.trim() || "Yeni liste";
   const keywords = [...new Set(keywordsInput.value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean))];
   lists[selected] = { name, enabled: enabledInput.checked, keywords };
 }
 
 function showList() {
+  listEditor.hidden = lists.length === 0;
+  listEditor.disabled = listEditor.hidden;
+  if (listEditor.hidden) return;
+
   listInput.replaceChildren(...lists.map(({ name, enabled }, index) =>
     new Option(enabled ? name : `${name} (kapalı)`, index)
   ));
@@ -26,12 +32,18 @@ function showList() {
   keywordsInput.value = keywords.join("\n");
 }
 
+function appendList(list) {
+  captureList();
+  selected = lists.length;
+  lists.push(list);
+  showList();
+}
+
 chrome.storage.local.get(FILTER_DEFAULTS).then(({ mode, lists: savedLists }) => {
   form.elements.mode.value = mode === "remove" ? "remove" : "blur";
   lists = Array.isArray(savedLists) ? savedLists.filter((list) =>
     typeof list?.name === "string" && typeof list.enabled === "boolean" && Array.isArray(list.keywords)
   ) : [];
-  if (lists.length === 0) lists = structuredClone(FILTER_DEFAULTS.lists);
   showList();
   controls.disabled = false;
   listsFieldset.disabled = false;
@@ -46,12 +58,14 @@ listInput.addEventListener("change", () => {
 });
 
 document.getElementById("add-list").addEventListener("click", () => {
-  captureList();
-  selected = lists.length;
-  lists.push({ name: "Yeni liste", enabled: false, keywords: [] });
-  showList();
+  appendList({ name: "Yeni liste", enabled: false, keywords: [] });
   nameInput.focus();
   nameInput.select();
+});
+
+document.getElementById("add-gta-preset").addEventListener("click", () => {
+  appendList({ name: "GTA VI", enabled: true, keywords: GTA_VI_KEYWORDS });
+  enabledInput.focus();
 });
 
 form.addEventListener("submit", async (event) => {

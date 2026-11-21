@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8">
 <title>X filter regression test</title>
-<link rel="stylesheet" href="../gta-vi-x-filter/content.css">
+<link rel="stylesheet" href="../x-keyword-filter/content.css">
 <body data-result="running">
 <div data-testid="cellInnerDiv" id="direct-row">
   <article data-testid="tweet" id="direct"><div data-testid="tweetText">GTA—Vİ’nin yeni videosu</div></article>
@@ -22,6 +22,7 @@
 </article>
 <article data-testid="tweet" id="late"><div lang="en" dir="auto" id="late-quote">Loading</div></article>
 <aside id="unrelated">GTA 6</aside>
+<script src="../x-keyword-filter/presets.js"></script>
 <script>
   const mode = new URLSearchParams(location.search).get("mode");
   const direct = document.getElementById("direct");
@@ -33,17 +34,17 @@
   const late = document.getElementById("late");
   const rowHeight = direct.offsetHeight;
   const initiallyHidden = getComputedStyle(direct).visibility === "hidden";
-  chrome.storage = { local: { get: async (defaults) => ({
+  chrome.storage = { local: { get: async (defaults) => mode === "default" ? defaults : ({
     mode,
     lists: [
-      ...(defaults.lists ?? []).map((list) => ({ ...list, enabled: mode !== "inactive" })),
+      { name: "GTA VI", enabled: mode !== "inactive", keywords: GTA_VI_KEYWORDS },
       { name: "Elden Ring", enabled: true, keywords: ["Elden Ring"] },
       { name: "Inactive", enabled: false, keywords: ["GTAVision"] }
     ]
   }) } };
 </script>
-<script src="../gta-vi-x-filter/keywords.js"></script>
-<script src="../gta-vi-x-filter/content.js"></script>
+<script src="../x-keyword-filter/preferences.js"></script>
+<script src="../x-keyword-filter/content.js"></script>
 <script>
   (async () => {
     const assert = (condition, message) => {
@@ -60,6 +61,12 @@
 
     assert(initiallyHidden, "A post was visible before the content script classified it");
     await afterMutations();
+    if (mode === "default") {
+      assert(getComputedStyle(direct).filter === "none" && getComputedStyle(direct).visibility === "visible", "GTA posts were filtered on a fresh installation");
+      document.body.insertAdjacentHTML("beforeend", '<article data-testid="tweet" id="new-post">#GTA6Oynanış</article>');
+      assert(getComputedStyle(document.getElementById("new-post")).visibility === "visible", "A fresh installation briefly hid a new post");
+      return;
+    }
     assertFiltered(anotherGame, "An active custom list was ignored");
     assert(getComputedStyle(clean).visibility === "visible" && getComputedStyle(clean).filter === "none", "An inactive list filtered an unrelated post");
     if (mode === "inactive") {
