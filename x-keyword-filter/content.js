@@ -50,6 +50,9 @@
     }
 
     const madeInert = new WeakSet();
+    const revealControls = new WeakMap();
+    const revealedPosts = new WeakMap();
+
     function matches(text) {
       if (!text) return false;
       const words = normalize(text).split(" ");
@@ -69,11 +72,52 @@
       );
     }
 
+    function postIdentity(post) {
+      return post.querySelector('a[href*="/status/"] time')?.closest("a").pathname ?? post.textContent;
+    }
+
+    function removeRevealControl(post) {
+      revealControls.get(post)?.remove();
+      revealControls.delete(post);
+    }
+
+    function clearPost(post) {
+      removeRevealControl(post);
+      if (madeInert.delete(post)) post.inert = false;
+      if (post.getAttribute(STATE) !== "clear") post.setAttribute(STATE, "clear");
+    }
+
+    function addRevealControl(post) {
+      let control = revealControls.get(post);
+      if (!control) {
+        // The button stays outside the blurred, inert article.
+        control = document.createElement("div");
+        control.className = "x-keyword-filter-reveal";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = "Göster";
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const hadFocus = document.activeElement === button;
+          revealedPosts.set(post, postIdentity(post));
+          clearPost(post);
+          if (hadFocus && !post.inert) {
+            if (!post.hasAttribute("tabindex")) post.tabIndex = -1;
+            post.focus({ preventScroll: true });
+          }
+        });
+        control.append(button);
+        revealControls.set(post, control);
+      }
+      if (control.nextElementSibling !== post) post.before(control);
+    }
+
     function filterPost(post) {
       if (!post.isConnected) return;
       if (!hasMatch(post)) {
-        if (madeInert.delete(post)) post.inert = false;
-        if (post.getAttribute(STATE) !== "clear") post.setAttribute(STATE, "clear");
+        revealedPosts.delete(post);
+        clearPost(post);
         return;
       }
 
@@ -85,16 +129,26 @@
         return;
       }
 
+      if (revealedPosts.has(post)) {
+        if (revealedPosts.get(post) === postIdentity(post)) return;
+        revealedPosts.delete(post);
+      }
+
       if (!post.inert) {
         post.inert = true;
         madeInert.add(post);
       }
       if (post.getAttribute(STATE) !== "blurred") post.setAttribute(STATE, "blurred");
+      addRevealControl(post);
     }
 
     new MutationObserver((mutations) => {
       const posts = new Set();
       for (const mutation of mutations) {
+        for (const node of mutation.removedNodes) {
+          if (!node.isConnected && revealControls.has(node)) removeRevealControl(node);
+        }
+
         const target = mutation.target.nodeType === Node.ELEMENT_NODE
           ? mutation.target
           : mutation.target.parentElement;

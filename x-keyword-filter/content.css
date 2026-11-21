@@ -10,6 +10,32 @@
   clip-path: inset(0);
 }
 
+.x-keyword-filter-reveal {
+  position: relative;
+  z-index: 1;
+  block-size: 0;
+}
+
+.x-keyword-filter-reveal > button {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 8px;
+  min-block-size: 32px;
+  padding: 5px 12px;
+  border: 1px solid GrayText;
+  border-radius: 999px;
+  color-scheme: light dark;
+  background: Canvas;
+  color: CanvasText;
+  font: 600 14px/1.3 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.x-keyword-filter-reveal > button:focus-visible {
+  outline: 2px solid Highlight;
+  outline-offset: 2px;
+}
+
 [data-testid="cellInnerDiv"][data-x-keyword-filter="empty"]:not(:has([data-testid="tweet"])) {
   display: none !important;
 }

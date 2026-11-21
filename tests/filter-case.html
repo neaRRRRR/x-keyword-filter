@@ -3,9 +3,16 @@
 <meta charset="utf-8">
 <title>X filter regression test</title>
 <link rel="stylesheet" href="../x-keyword-filter/content.css">
+<style>
+  body > article, [data-testid="cellInnerDiv"] > article { min-height: 72px; }
+  [data-testid="cellInnerDiv"] { display: flex; flex-direction: column; }
+</style>
 <body data-result="running">
 <div data-testid="cellInnerDiv" id="direct-row">
-  <article data-testid="tweet" id="direct"><div data-testid="tweetText">Proje—Vİ’nin yeni videosu</div></article>
+  <article data-testid="tweet" id="direct">
+    <a href="https://x.com/example/status/1"><time>1m</time></a>
+    <div data-testid="tweetText">Proje—Vİ’nin yeni videosu</div>
+  </article>
 </div>
 <div data-testid="cellInnerDiv" id="quote-row">
   <article data-testid="tweet" id="quote">
@@ -61,6 +68,15 @@
         assert(post.isConnected && post.inert && /^blur\(/.test(getComputedStyle(post).filter), message);
       }
     };
+    const revealButton = (post) => {
+      const bounds = post.getBoundingClientRect();
+      return Array.from(document.querySelectorAll("button")).find((button) => {
+        const rect = button.getBoundingClientRect();
+        return button.textContent === "Göster" && rect.width > 0 &&
+          rect.top >= bounds.top && rect.top <= bounds.top + 16 &&
+          rect.right <= bounds.right && rect.right >= bounds.right - 16;
+      });
+    };
 
     assert(initiallyHidden, "A post was visible before the content script classified it");
     await afterMutations();
@@ -83,11 +99,37 @@
     assert(getComputedStyle(document.getElementById("clean-quote")).visibility === "visible", "An unrelated nested quote was hidden");
     assert(getComputedStyle(document.getElementById("unrelated")).visibility === "visible", "Page text outside a post was filtered");
     if (mode === "remove") {
+      assert(!document.querySelector("button"), "Removal added reveal controls");
       assert(document.getElementById("direct-row").offsetHeight === 0, "A removed post left a visible timeline cell");
       document.getElementById("direct-row").innerHTML = '<article data-testid="tweet" id="replacement">Sports scores</article>';
     } else {
       assert(direct.offsetHeight === rowHeight, "Blurring changed the height of the post");
+      const button = revealButton(direct);
+      const standaloneButton = revealButton(link);
+      assert(button && !button.closest("[inert]") && standaloneButton, "A blurred post is missing its accessible corner button");
+      let bubbled = false;
+      direct.parentElement.addEventListener("click", () => { bubbled = true; }, { once: true });
+      button.focus();
+      const rect = button.getBoundingClientRect();
+      assert(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2) === button, "The corner button was covered by the blurred post");
+      button.click();
+      assert(!direct.inert && getComputedStyle(direct).filter === "none" && !button.isConnected, "Clicking the button did not reveal the post");
+      assert(!bubbled && document.activeElement === direct, "Revealing caused a page click or lost keyboard focus");
+      assertFiltered(quote, "Revealing one post opened another");
+      const time = direct.querySelector("time");
+      time.textContent = "2m";
+      link.remove();
+      await afterMutations();
+      assert(getComputedStyle(direct).filter === "none", "An update hid the revealed post again");
+      assert(!standaloneButton.isConnected, "A removed post left its reveal button behind");
+      time.parentElement.href = "https://x.com/example/status/2";
+      await afterMutations();
+      assertFiltered(direct, "A recycled post inherited the old reveal");
+      const recycledButton = revealButton(direct);
+      assert(recycledButton, "A recycled post was missing its reveal button");
       direct.querySelector('[data-testid="tweetText"]').textContent = "Sports scores";
+      await afterMutations();
+      assert(!recycledButton.isConnected, "A clear post retained its reveal button");
     }
 
     document.body.insertAdjacentHTML("beforeend", '<article data-testid="tweet" id="new-post">#ProjeVİDuyuru</article>');

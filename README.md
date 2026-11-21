@@ -17,6 +17,8 @@ Chrome ve Chromium tabanlı tarayıcılarda X gönderilerini ve içlerindeki al�
 
 Tarayıcı araç çubuğundaki uzantı menüsünden **X Kelime Filtresi**’ni aç. **Bulanıklaştır** varsayılan işlemdir ve gönderinin akıştaki yerini korur. **Kaldır**, eşleşen gönderi öğesini sayfadan çıkarır.
 
+Bulanık bir gönderinin sağ üstündeki **Göster** düğmesiyle o gönderiyi açabilirsin.
+
 İlk kurulumda kelime listeleri boştur. **Yeni liste** ile istediğin konu için bir liste oluşturabilirsin. Bir listeyi seçip adını, etkinliğini ve kelimelerini düzenle. Etkin listeler birlikte çalışır ve tarayıcıda saklanır. Değişiklikleri kaydettikten sonra açık X sekmelerini yenile.
 
 Filtre, X’in yüklediği gönderi ve alıntı metinlerini, görünen hesap adlarını, bağlantıları ve mevcut alternatif metinleri tarayıcıda inceler. Görseldeki yazıyı yakalamak için X’te erişilebilir bir metin karşılığı gerekir.
