@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "X Kelime Filtresi",
-  "version": "1.3.0",
-  "description": "X gönderilerini ve alıntılarını kelime listelerine göre bulanıklaştırır veya kaldırır.",
+  "name": "__MSG_extension_name__",
+  "version": "1.4.0",
+  "description": "__MSG_extension_description__",
+  "default_locale": "tr",
   "minimum_chrome_version": "105",
   "permissions": ["storage", "unlimitedStorage"],
   "action": {
-    "default_title": "X Kelime Filtresi",
+    "default_title": "__MSG_extension_name__",
     "default_popup": "settings.html"
   },
   "content_scripts": [

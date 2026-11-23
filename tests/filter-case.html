@@ -31,6 +31,7 @@
 <aside id="unrelated">Outdoor market</aside>
 <script>
   const mode = new URLSearchParams(location.search).get("mode");
+  const revealLabel = mode === "blur-en" ? "Show" : "Göster";
   const direct = document.getElementById("direct");
   const quote = document.getElementById("quote");
   const link = document.getElementById("link");
@@ -40,8 +41,9 @@
   const late = document.getElementById("late");
   const rowHeight = direct.offsetHeight;
   const initiallyHidden = getComputedStyle(direct).visibility === "hidden";
+  chrome.i18n = { getMessage: (key) => key === "reveal_post" ? revealLabel : "" };
   chrome.storage = { local: { get: async (defaults) => mode === "default" ? defaults : ({
-    mode,
+    mode: mode === "blur-en" ? "blur" : mode,
     lists: [
       {
         name: "Events",
@@ -72,7 +74,7 @@
       const bounds = post.getBoundingClientRect();
       return Array.from(document.querySelectorAll("button")).find((button) => {
         const rect = button.getBoundingClientRect();
-        return button.textContent === "Göster" && rect.width > 0 &&
+        return button.textContent === revealLabel && rect.width > 0 &&
           rect.top >= bounds.top && rect.top <= bounds.top + 16 &&
           rect.right <= bounds.right && rect.right >= bounds.right - 16;
       });

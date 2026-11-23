@@ -15,6 +15,8 @@ Chrome ve Chromium tabanlı tarayıcılarda X gönderilerini ve içlerindeki al�
 
 ## Ayarlar
 
+Uzantı, tarayıcının arayüz dili İngilizce olduğunda İngilizce açılır. Diğer arayüz dillerinde Türkçe kullanılır.
+
 Tarayıcı araç çubuğundaki uzantı menüsünden **X Kelime Filtresi**’ni aç. **Bulanıklaştır** varsayılan işlemdir ve gönderinin akıştaki yerini korur. **Kaldır**, eşleşen gönderi öğesini sayfadan çıkarır.
 
 Bulanık bir gönderinin sağ üstündeki **Göster** düğmesiyle o gönderiyi açabilirsin.

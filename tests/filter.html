@@ -17,10 +17,10 @@
       document.body.dataset.result = [...results.values()].every((value) => value === "pass") ? "pass" : "fail";
     }
   });
-  for (const mode of ["default", "blur", "remove", "inactive", "settings", "saved-settings"]) {
+  for (const mode of ["default", "blur", "blur-en", "remove", "inactive", "settings", "settings-en", "saved-settings"]) {
     const frame = document.createElement("iframe");
     frame.title = mode;
-    const fixture = mode.endsWith("settings") ? "settings-case.html" : "filter-case.html";
+    const fixture = mode.includes("settings") ? "settings-case.html" : "filter-case.html";
     frame.src = `${fixture}?mode=${mode}`;
     cases.set(mode, frame);
     document.body.append(frame);

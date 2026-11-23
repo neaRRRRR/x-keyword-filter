@@ -95,7 +95,7 @@
         control.className = "x-keyword-filter-reveal";
         const button = document.createElement("button");
         button.type = "button";
-        button.textContent = "Göster";
+        button.textContent = chrome.i18n.getMessage("reveal_post");
         button.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();

@@ -1,0 +1,24 @@
+{
+  "language": { "message": "en" },
+  "extension_name": { "message": "X Keyword Filter" },
+  "extension_description": { "message": "Blur or remove X posts and quoted posts using keyword lists." },
+  "matching_posts": { "message": "Matching posts" },
+  "blur": { "message": "Blur" },
+  "remove": { "message": "Remove" },
+  "keyword_lists": { "message": "Keyword lists" },
+  "new_list": { "message": "New list" },
+  "edit_list": { "message": "List to edit" },
+  "list_name": { "message": "List name" },
+  "enable_list": { "message": "Enable this list" },
+  "keywords": { "message": "Keywords" },
+  "keyword_hint": { "message": "Enter one word or phrase per line." },
+  "save": { "message": "Save" },
+  "inactive_list": {
+    "message": "$NAME$ (off)",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "settings_read_error": { "message": "Couldn't load settings. Reopen the extension menu." },
+  "settings_saved": { "message": "Saved. Refresh open X tabs." },
+  "settings_save_error": { "message": "Couldn't save settings. Try again." },
+  "reveal_post": { "message": "Show" }
+}

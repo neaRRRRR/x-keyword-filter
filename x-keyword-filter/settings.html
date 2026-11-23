@@ -3,34 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>X Kelime Filtresi</title>
+  <title data-message="extension_name"></title>
   <link rel="stylesheet" href="settings.css">
   <script src="preferences.js" defer></script>
   <script src="settings.js" defer></script>
 </head>
 <body>
-  <h1>X Kelime Filtresi</h1>
+  <h1 data-message="extension_name"></h1>
   <form>
     <fieldset id="controls" disabled>
-      <legend>Eşleşen gönderiler</legend>
+      <legend data-message="matching_posts"></legend>
       <div class="modes">
-        <label><input type="radio" name="mode" value="blur" checked> Bulanıklaştır</label>
-        <label><input type="radio" name="mode" value="remove"> Kaldır</label>
+        <label><input type="radio" name="mode" value="blur" checked> <span data-message="blur"></span></label>
+        <label><input type="radio" name="mode" value="remove"> <span data-message="remove"></span></label>
       </div>
     </fieldset>
     <fieldset id="lists" disabled>
-      <legend>Kelime listeleri</legend>
-      <button type="button" id="add-list">Yeni liste</button>
+      <legend data-message="keyword_lists"></legend>
+      <button type="button" id="add-list" data-message="new_list"></button>
       <fieldset id="list-editor" hidden disabled>
-        <select id="list" aria-label="Düzenlenecek liste"></select>
-        <label for="list-name" class="field-label">Liste adı</label>
+        <select id="list"></select>
+        <label for="list-name" class="field-label" data-message="list_name"></label>
         <input id="list-name" type="text" required>
-        <label class="list-toggle"><input id="list-enabled" type="checkbox"> Bu liste aktif</label>
-        <label for="keywords" class="field-label">Anahtar kelimeler</label>
-        <p id="hint">Her satıra bir kelime veya ifade yaz.</p>
+        <label class="list-toggle"><input id="list-enabled" type="checkbox"> <span data-message="enable_list"></span></label>
+        <label for="keywords" class="field-label" data-message="keywords"></label>
+        <p id="hint" data-message="keyword_hint"></p>
         <textarea id="keywords" rows="8" wrap="off" spellcheck="false" aria-describedby="hint"></textarea>
       </fieldset>
-      <button type="submit">Kaydet</button>
+      <button type="submit" data-message="save"></button>
     </fieldset>
     <p id="status" role="status"></p>
   </form>

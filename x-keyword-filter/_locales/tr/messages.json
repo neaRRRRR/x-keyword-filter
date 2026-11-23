@@ -1,0 +1,24 @@
+{
+  "language": { "message": "tr" },
+  "extension_name": { "message": "X Kelime Filtresi" },
+  "extension_description": { "message": "X gönderilerini ve alıntılarını kelime listelerine göre bulanıklaştırır veya kaldırır." },
+  "matching_posts": { "message": "Eşleşen gönderiler" },
+  "blur": { "message": "Bulanıklaştır" },
+  "remove": { "message": "Kaldır" },
+  "keyword_lists": { "message": "Kelime listeleri" },
+  "new_list": { "message": "Yeni liste" },
+  "edit_list": { "message": "Düzenlenecek liste" },
+  "list_name": { "message": "Liste adı" },
+  "enable_list": { "message": "Bu liste aktif" },
+  "keywords": { "message": "Anahtar kelimeler" },
+  "keyword_hint": { "message": "Her satıra bir kelime veya ifade yaz." },
+  "save": { "message": "Kaydet" },
+  "inactive_list": {
+    "message": "$NAME$ (kapalı)",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "settings_read_error": { "message": "Ayarlar okunamadı. Uzantının menüsünü tekrar aç." },
+  "settings_saved": { "message": "Kaydedildi. Açık X sekmelerini yenile." },
+  "settings_save_error": { "message": "Ayarlar kaydedilemedi. Tekrar dene." },
+  "reveal_post": { "message": "Göster" }
+}

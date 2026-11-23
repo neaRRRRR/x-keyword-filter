@@ -8,7 +8,7 @@
     <input type="radio" name="mode" value="remove">
   </fieldset>
   <fieldset id="lists" disabled>
-    <button id="add-list" type="button">New list</button>
+    <button id="add-list" type="button" data-message="new_list"></button>
     <fieldset id="list-editor" hidden disabled>
       <select id="list"></select>
       <input id="list-name" required>
@@ -22,6 +22,15 @@
 <script>
   let storedSettings;
   const testMode = new URLSearchParams(location.search).get("mode");
+  const english = testMode === "settings-en";
+  const messages = {
+    language: english ? "en" : "tr",
+    new_list: english ? "New list" : "Yeni liste",
+    edit_list: english ? "List to edit" : "Düzenlenecek liste",
+    inactive_list: english ? "$1 (off)" : "$1 (kapalı)",
+    settings_saved: english ? "Saved. Refresh open X tabs." : "Kaydedildi. Açık X sekmelerini yenile."
+  };
+  chrome.i18n = { getMessage: (key, value) => messages[key]?.replace("$1", () => value) ?? "" };
   const previousSettings = {
     mode: "remove",
     lists: [
@@ -42,6 +51,9 @@
       if (!condition) throw new Error(message);
     };
     await Promise.resolve();
+    const newList = document.getElementById("add-list");
+    assert(document.documentElement.lang === messages.language && newList.textContent === messages.new_list, "The popup did not use the browser's language");
+    assert(listInput.getAttribute("aria-label") === messages.edit_list, "The list's accessible label was not translated");
     if (testMode === "saved-settings") {
       form.requestSubmit();
       await Promise.resolve();
@@ -53,12 +65,13 @@
     await Promise.resolve();
     assert(storedSettings.lists.length === 0, "Saving without a list created one");
 
-    document.getElementById("add-list").click();
+    newList.click();
     assert(!listEditor.hidden && !enabledInput.checked && keywordsInput.value === "", "A new list was not empty and inactive");
+    assert(nameInput.value === messages.new_list && listInput.selectedOptions[0].text === messages.inactive_list.replace("$1", messages.new_list), "The default list name or inactive label was not translated");
 
     nameInput.value = "Events";
     keywordsInput.value = "Outdoor market";
-    document.getElementById("add-list").click();
+    newList.click();
     assert(!enabledInput.checked, "New lists started enabled");
     nameInput.value = "News";
     enabledInput.checked = true;
@@ -71,6 +84,7 @@
     form.requestSubmit();
     await Promise.resolve();
     const [first, second] = storedSettings.lists;
+    assert(statusMessage.textContent === messages.settings_saved, "The save confirmation was not translated");
     assert(storedSettings.mode === "remove", "The removal setting was lost");
     assert(!first.enabled && first.name === "Events" && first.keywords.includes("Outdoor market"), "The edited list was lost");
     assert(second.enabled && second.name === "News" && second.keywords[4999] === "keyword 4999", "The new list or keywords were lost");
